@@ -1,0 +1,150 @@
+.mainContainer {
+  text-align: center;
+}
+
+.heroContainer {
+  padding-top: 144px;
+  padding-bottom: 100px;
+  background-image: radial-gradient(47.88% 81.28% at 50% 0%, #FFFFFF 0%, rgba(255, 255, 255, 0) 99.11%);
+}
+
+.brandName {
+  font-weight: 600;
+  font-size: 64px;
+  line-height: 68px;
+  letter-spacing: -0.02em;
+  color: #2f2b43;
+}
+
+.tagline {
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 54px;
+  letter-spacing: -0.02em;
+  color: #2f2b43;
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.subhead {
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.014em;
+  color: rgba(47, 43, 67, 0.6);
+  max-width: 600px;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.avatarGroup {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  margin-left: -13px;
+}
+
+.usersText {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  color: rgba(47, 43, 67, 0.6);
+}
+
+.subhead2 {
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: -0.012em;
+  color: rgba(47, 43, 67, 0.6);
+  max-width: 600px;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.image {
+  max-width: 996px;
+  width: calc(100% - 32px);
+  margin: 64px auto;
+}
+
+.featuresContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  max-width: 1200px;
+  width: calc(100% - 32px);
+  margin: 0 auto;
+}
+
+.featureBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 384px;
+}
+
+.featureName {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.014em;
+  color: #2f2b43;
+}
+
+.featureText {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  color: rgba(47, 43, 67, 0.6);
+}
+
+.joinContainer {
+  padding: 104px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 700px) {
+  .heroContainer {
+    padding-top: 128px;
+    padding-bottom: 72px;
+  }
+  .brandName {
+    font-size: 48px;
+    line-height: 54px;
+  }
+
+  .tagline {
+    font-size: 36px;
+    line-height: 42px;
+    letter-spacing: -0.018em;
+  }
+
+  .subhead {
+    font-size: 18px;
+    line-height: 26px;
+    letter-spacing: -0.012em;
+  }
+
+  .subhead2 {
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .image {
+    margin: 48px auto;
+  }
+
+  .joinContainer {
+    padding: 40px 0;
+  }
+}

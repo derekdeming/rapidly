@@ -1,0 +1,202 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+// generator client_py {
+//   provider      = "prisma-client-py"
+//   binaryTargets = ["native", "darwin-arm64"]
+// }
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+  extensions   = [uuid_ossp(map: "uuid-ossp", schema: "extensions"), vector]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  providerAccountId String
+  access_token      String?
+  expires_at        Int?
+  id_token          String?
+  provider          String
+  refresh_token     String?
+  scope             String?
+  session_state     String?
+  token_type        String?
+  type              String
+  metadata          Json?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model UserApiLimit {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_api_limits")
+}
+
+model UserSubscription {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  stripeCustomerId       String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
+  stripePriceId          String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+
+  @@map("user_subscriptions")
+}
+
+model UserSecret {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  key    String
+  value  String
+
+  @@unique([userId, key])
+  @@map("user_secrets")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model WaitlistSignup {
+  email String @unique
+
+  @@map("waitlist_signups")
+}
+
+model DataVectorStore {
+  id        BigInt                 @id @default(autoincrement())
+  text      String                 @db.VarChar
+  metadata_ Json?                  @db.Json
+  node_id   String?                @db.VarChar
+  embedding Unsupported("vector")?
+
+  subqueries SubqueryToDataVectorStore[]
+
+  @@map(name: "data_vector_store")
+}
+
+model DataUrbanDemo {
+  id        BigInt                 @id @default(autoincrement())
+  text      String                 @db.VarChar
+  metadata_ Json?                  @db.Json
+  node_id   String?                @db.VarChar
+  embedding Unsupported("vector")?
+
+  @@map(name: "data_urban_demo")
+}
+
+model DataV1 {
+  id        BigInt                 @id @default(autoincrement())
+  text      String                 @db.VarChar
+  metadata_ Json?                  @db.Json
+  node_id   String?                @db.VarChar
+  embedding Unsupported("vector")?
+
+  @@map(name: "data_v1")
+}
+
+enum Status {
+  START
+  END
+}
+
+enum Code {
+  SUCCESS
+  FAILED
+}
+
+model SyncLog {
+  id      Int      @id @default(autoincrement())
+  userId  String
+  source  String
+  status  Status   @default(START)
+  code    Code?
+  ts      DateTime @default(now())
+  message String?
+
+  @@map(name: "sync_logs")
+}
+
+model ConversationMessage {
+  conversationId      String
+  messageId           String     @default(cuid())
+  userId              String
+  fetchAdditionalSrcs Boolean    @default(true)
+  userMessage         String
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  subqueries          Subquery[]
+  aiResponse          String?
+
+  @@id([conversationId, messageId])
+  @@map("conversation_messages")
+}
+
+model Subquery {
+  id             String                      @id @default(cuid())
+  conversationId String
+  messageId      String
+  query          String
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
+  documents      SubqueryToDataVectorStore[]
+  conversation   ConversationMessage         @relation(fields: [conversationId, messageId], references: [conversationId, messageId])
+
+  @@index([conversationId, messageId])
+  @@map("subqueries")
+}
+
+model SubqueryToDataVectorStore {
+  subqueryId        String
+  dataVectorStoreId BigInt
+
+  subquery        Subquery        @relation(fields: [subqueryId], references: [id])
+  dataVectorStore DataVectorStore @relation(fields: [dataVectorStoreId], references: [id])
+
+  @@id([subqueryId, dataVectorStoreId])
+  @@index([subqueryId])
+  @@index([dataVectorStoreId])
+  @@map("subquery_to_data_vector_store")
+}
